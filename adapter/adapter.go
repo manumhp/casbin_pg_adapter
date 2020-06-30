@@ -50,13 +50,14 @@ func NewAdapterByDB(db *sql.DB) (*Adapter, error) {
 
 func (a *Adapter) createTablesifNotExisting() error {
 	// Roles table
-	_, err := a.db.Exec("CREATE table IF NOT EXISTS t_role_policy_mapping (role_name VARCHAR(100), rights VARCHAR(100), PRIMARY KEY(role_name));")
+	_, err := a.db.Exec("CREATE table IF NOT EXISTS t_role_policy_mapping (role_name VARCHAR(100), rights VARCHAR(100), PRIMARY KEY(role_name, rights));")
 	if err != nil {
 		return err
 	}
 
 	// Role-user mapping table
-	_, err = a.db.Exec("CREATE table IF NOT EXISTS t_user_role_mapping (user_id VARCHAR(100), project_id VARCHAR(100), role_name VARCHAR(100), data_insertion_ts DATETIME, PRIMARY KEY(user_id, project_id));")
+	// _, err = a.db.Exec("CREATE table IF NOT EXISTS t_user_role_mapping (user_id VARCHAR(100), project_id VARCHAR(100), role_name VARCHAR(100), data_insertion_ts DATETIME, PRIMARY KEY(user_id, project_id));")
+	_, err = a.db.Exec("CREATE table IF NOT EXISTS t_user_role_mapping (user_id VARCHAR(100), project_id VARCHAR(100), role_name VARCHAR(100), data_insertion_ts timestamp, PRIMARY KEY(user_id, project_id));")
 	if err != nil {
 		return err
 	}
@@ -79,11 +80,11 @@ func (a *Adapter) LoadPolicy(model model.Model) error {
 
 	queryRolePolicyRows :=
 		`select 
-		distinct 'p' as PType ,concat(turm.project_id, '_', trpm.rolename) as v0,
+		distinct 'p' as PType ,concat(turm.project_id, '_', trpm.role_name) as v0,
 		turm.project_id as v1, trpm.rights as v2
 	from 
 		public.t_role_policy_mapping trpm, public.t_user_role_mapping turm where 
-		trpm.rolename = turm .role_name;`
+		trpm.role_name = turm .role_name;`
 
 	rolePolicyRows, err := a.db.Query(queryRolePolicyRows)
 
@@ -93,10 +94,10 @@ func (a *Adapter) LoadPolicy(model model.Model) error {
 
 	queryUserRoleRows :=
 		`select 
-		distinct 'g' as PTYpe, turm.user_id as v0, concat(turm.project_id, '_', trpm.rolename) as v1 
+		distinct 'g' as PTYpe, turm.user_id as v0, concat(turm.project_id, '_', trpm.role_name) as v1 
 	from 
 		public.t_role_policy_mapping trpm inner join public.t_user_role_mapping turm 
-		on trpm.rolename = turm .role_name;`
+		on trpm.role_name = turm .role_name;`
 
 	userRoleRows, err := a.db.Query(queryUserRoleRows)
 	if err != nil {
@@ -129,8 +130,8 @@ func (a *Adapter) LoadPolicy(model model.Model) error {
 func (a *Adapter) AddPolicy(sec string, ptype string, rule []string) error {
 	projectName := strings.Split(rule[1], ".")[0]
 	roleName := strings.Split(rule[1], ".")[1]
-	// insertQuery := `INSERT into public.t_user_role_mapping (user_id, project_id, role_name) VALUES($1, $2, $3) ON CONFLICT DO NOTHING;`
-	insertQuery := `INSERT into public.t_user_role_mapping (user_id, project_id, role_name) VALUES($1, $2, $3) ON CONFLICT UPDATE;`
+	insertQuery := `INSERT into public.t_user_role_mapping (user_id, project_id, role_name) VALUES($1, $2, $3) ON CONFLICT DO NOTHING;`
+	// insertQuery := `INSERT into public.t_user_role_mapping (user_id, project_id, role_name) VALUES($1, $2, $3) ON CONFLICT UPDATE;`
 	_, error := a.db.Exec(insertQuery, rule[0], projectName, roleName)
 	if error != nil {
 		return error
