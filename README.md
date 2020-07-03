@@ -30,7 +30,6 @@ var (
 
 func main() {
 
-	// a, _ := adapter.NewAdapter("host=localhost port=5432 user=postgres dbname=casbin_dev sslmode=disable schema='app_data'")
 	a, _ := adapter.NewAdapter("host=localhost port=5432 user=postgres dbname=casbin_dev sslmode=disable")
 
 	authEnforcer, err := casbin.NewEnforcer("conf/auth_model.conf", a)
