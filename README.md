@@ -1,11 +1,11 @@
-# casbin_adapter : A postgresql adapter for the casbin authorization library
+# casbin_pg_adapter : A postgresql adapter for the casbin authorization library
 
-## Overview [![GoDoc](https://godoc.org/github.com/manumhp/casbin_adapter?status.svg)](https://godoc.org/github.com/manumhp/casbin_adapter)
+## Overview [![GoDoc](https://godoc.org/github.com/manumhp/casbin_pg_adapter?status.svg)](https://godoc.org/github.com/manumhp/casbin_pg_adapter)
 
 ## Install
 
 ```
-go get github.com/manumhp/casbin_adapter
+go get github.com/manumhp/casbin_pg_adapter
 ```
 
 ## Example
@@ -14,13 +14,13 @@ go get github.com/manumhp/casbin_adapter
 package main
 
 import (
-	"casbin_adapter/adapter"
 	"context"
 	"database/sql"
 	"fmt"
 	"log"
 
 	"github.com/casbin/casbin/v2"
+	"github.com/manumhp/casbin_pg_adapter/adapter"
 )
 
 var (
@@ -60,7 +60,12 @@ func main() {
 	}
 	fmt.Println(res)
 }
+
 ```
+
+## Author
+
+Manu.
 
 ## License
 
