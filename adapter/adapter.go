@@ -1,10 +1,11 @@
 package adapter
 
 import (
-	casbinmodel "casbin_adapter/casbinModel"
 	"errors"
 	"fmt"
 	"strings"
+
+	casbinmodel "github.com/manumhp/casbin_pg_adapter/casbinModel"
 
 	"database/sql"
 

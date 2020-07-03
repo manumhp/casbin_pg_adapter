@@ -1,4 +1,4 @@
-module casbin_adapter
+module github.com/manumhp/casbin_pg_adapter
 
 go 1.14
 

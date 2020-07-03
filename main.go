@@ -1,13 +1,13 @@
 package main
 
 import (
-	"casbin_adapter/adapter"
 	"context"
 	"database/sql"
 	"fmt"
 	"log"
 
 	"github.com/casbin/casbin/v2"
+	"github.com/manumhp/casbin_pg_adapter/adapter"
 )
 
 var (
