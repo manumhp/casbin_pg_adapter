@@ -65,7 +65,7 @@ func main() {
 
 ## Author
 
-Manu.
+Manu
 
 ## License
 
