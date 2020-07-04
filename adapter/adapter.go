@@ -81,7 +81,7 @@ func (a *Adapter) LoadPolicy(model model.Model) error {
 		`select 
 		distinct 'p' as PType ,concat(turm.project_id, '_', trpm.role_name) as v0,
 		turm.project_id as v1, trpm.rights as v2
-	from ` + schemaName + `.t_role_policy_mapping trpm, public.t_user_role_mapping turm where 
+	from ` + schemaName + `.t_role_policy_mapping trpm, ` + schemaName + `.t_user_role_mapping turm where 
 		trpm.role_name = turm .role_name;`
 
 	rolePolicyRows, err := a.db.Query(queryRolePolicyRows)
@@ -93,7 +93,7 @@ func (a *Adapter) LoadPolicy(model model.Model) error {
 	queryUserRoleRows :=
 		`select 
 		distinct 'g' as PTYpe, turm.user_id as v0, concat(turm.project_id, '_', trpm.role_name) as v1 
-	from ` + schemaName + `.t_role_policy_mapping trpm inner join public.t_user_role_mapping turm 
+	from ` + schemaName + `.t_role_policy_mapping trpm inner join ` + schemaName + `.t_user_role_mapping turm 
 		on trpm.role_name = turm .role_name;`
 
 	userRoleRows, err := a.db.Query(queryUserRoleRows)
@@ -129,7 +129,6 @@ func (a *Adapter) AddPolicy(sec string, ptype string, rule []string) error {
 	roleName := strings.Split(rule[1], ".")[1]
 	schemaName := a.schemaName
 	insertQuery := `INSERT into ` + schemaName + `.t_user_role_mapping (user_id, project_id, role_name) VALUES($1, $2, $3) ON CONFLICT DO NOTHING;`
-	// insertQuery := `INSERT into public.t_user_role_mapping (user_id, project_id, role_name) VALUES($1, $2, $3) ON CONFLICT UPDATE;`
 	_, error := a.db.Exec(insertQuery, rule[0], projectName, roleName)
 	if error != nil {
 		return error
