@@ -43,9 +43,6 @@ func NewAdapter(arg interface{}) (*Adapter, error) {
 func NewAdapterByDB(db *sql.DB, schemaName string) (*Adapter, error) {
 	a := &Adapter{db: db, schemaName: schemaName}
 
-	if err := a.createTablesifNotExisting(); err != nil {
-		return nil, err
-	}
 	return a, nil
 }
 
